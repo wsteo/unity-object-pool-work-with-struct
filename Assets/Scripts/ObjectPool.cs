@@ -12,9 +12,14 @@ namespace MonsterLove.Collections
 		private int lastIndex = 0;
 
 		public ObjectPool(Func<T> factoryFunc, int initialSize)
-		{
-			this.factoryFunc = factoryFunc;
+        {
+            this.factoryFunc = factoryFunc;
 
+            Initialize(initialSize);
+        }
+
+		private void Initialize(int initialSize)
+		{
 			list = new List<ObjectPoolContainer<T>>(initialSize);
 			lookup = new Dictionary<T, ObjectPoolContainer<T>>(initialSize);
 
@@ -62,7 +67,8 @@ namespace MonsterLove.Collections
 			}
 
 			container.Consume();
-			lookup.Add(container.Item, container);
+			if (!lookup.ContainsKey(container.Item))
+				lookup.Add(container.Item, container);
 			return container.Item;
 		}
 
